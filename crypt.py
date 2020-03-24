@@ -82,7 +82,6 @@ def compara_hash(salt,senhas):
                             if salt+senha[:-1] == hash.split("---")[0]:
                                 print(f"\033[1;33mHash: \033[1;32m{senha[:-1]} \033[1;33m--> \033[1;32m{hash.split('---')[1]}\033[m")
                                 controle = 1
-            hashes.close()
 
     # CASO O QUE FOI DADO ENTRADA FOR UM HASH ELE O COMPARA COM O ARQUIVO GERADO NA FUNÇÃO ACIMA, LINHA A LINHA
     else:
@@ -96,7 +95,7 @@ def compara_hash(salt,senhas):
                     if salt+senhas == hash.split("---")[0]:
                         print(f"\033[1;33mHash: \033[1;32m{senhas} \033[1;33m----> \033[1;32m{hash.split('---')[1]}\033[m")
                         controle = 1
-        hashes.close()
+                                                                                                                        
     if controle == 0:
         print('\033[1;31m\nNENHUMA CORRESPONDÊNCIA!\033[m')
 
