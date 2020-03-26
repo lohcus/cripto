@@ -49,7 +49,7 @@ def calcula_hash(salt,senhas):
         if os.path.exists(senhas):
             with open(senhas, "r") as senhas:
                 for senha in senhas:
-                    hashes.write(crypt.crypt(senha,salt) + "---" + senha)
+                    hashes.write(crypt.crypt(senha.replace("\n",""),salt) + "---" + senha)
                 hashes.close()
 
         # CASO O QUE FOI DADO ENTRADA SEJA UMA SENHA, ELE CRIPTOGRAFA E GRAVA NO ARQUIVO
@@ -72,16 +72,22 @@ def compara_hash(salt,senhas):
     if os.path.exists(senhas):
         with open(senhas, "r") as senhas:
             for senha in senhas:
+                senha = senha[:-1]
                 with open("hashes.txt", "r") as hashes:
-                    for hash in hashes:
-                        if senha[0] == "$":
-                            if senha[:-1] == hash.split("---")[0]:
-                                print(f"\033[1;33mHash: \033[1;32m{senha[:-1]} \033[1;33m-> \033[1;32m{hash.split('---')[1]}\033[m")
-                                controle = 1
-                        else:
-                            if salt+senha[:-1] == hash.split("---")[0]:
-                                print(f"\033[1;33mHash: \033[1;32m{senha[:-1]} \033[1;33m--> \033[1;32m{hash.split('---')[1]}\033[m")
-                                controle = 1
+                    try:
+                        for hash in hashes:
+                            if senha[0] == "$":
+                                if senha == hash.split("---")[0]:
+                                    hash = hash.split("---")[1].replace("\n","")
+                                    print(f"\033[1;33mHash: \033[1;32m{senha} \033[1;33m-> \033[1;32m{hash}\033[m")
+                                    controle = 1
+                            else:
+                                if salt+senha == hash.split("---")[0]:
+                                    hash = hash.split("---")[1].replace("\n", "")
+                                    print(f"\033[1;33mHash: \033[1;32m{senha} \033[1;33m--> \033[1;32m{hash}\033[m")
+                                    controle = 1
+                    except IndexError:
+                        pass
 
     # CASO O QUE FOI DADO ENTRADA FOR UM HASH ELE O COMPARA COM O ARQUIVO GERADO NA FUNÇÃO ACIMA, LINHA A LINHA
     else:
@@ -95,7 +101,7 @@ def compara_hash(salt,senhas):
                     if salt+senhas == hash.split("---")[0]:
                         print(f"\033[1;33mHash: \033[1;32m{senhas} \033[1;33m----> \033[1;32m{hash.split('---')[1]}\033[m")
                         controle = 1
-                                                                                                                        
+
     if controle == 0:
         print('\033[1;31m\nNENHUMA CORRESPONDÊNCIA!\033[m')
 
@@ -132,7 +138,7 @@ while True:
         else:
             print('\033[1;31m\nOPÇÃO INVÁLIDA!\033[m')
             sleep(2)
-    except:
+    except Exception as erro:
         print('\033[1;31m\nDIGITE APENAS NUMEROS!\033[m')
         escolha = 0
         sleep(2)
